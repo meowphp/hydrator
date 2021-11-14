@@ -15,7 +15,8 @@
     "authors": [
         {
             "name": "May Meow",
-            "email": "hello@mitsuha.dev"
+            "email": "hello@mitsuha.dev",
+            "homepage": "https://themaymeow.com"
         }
     ],
     "require": {
