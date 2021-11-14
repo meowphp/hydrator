@@ -48,6 +48,10 @@ class Hydrator
         $result = [];
 
         foreach ($fields as $propertyName) {
+            if (!$reflection->hasProperty($propertyName)) {
+                continue;
+            }
+
             $property = $reflection->getProperty($propertyName);
 
             if ($property->isProtected() || $property->isPrivate()) {
