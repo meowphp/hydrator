@@ -21,6 +21,10 @@ class Hydrator
         $object = $reflection->newInstanceWithoutConstructor();
 
         foreach ($fields as $k => $v) {
+            if (!$reflection->hasProperty($k)) {
+                continue;
+            }
+
             $property = $reflection->getProperty($k);
 
             if ($property->isPrivate() || $property->isProtected()) {
@@ -48,10 +52,6 @@ class Hydrator
         $result = [];
 
         foreach ($fields as $propertyName) {
-            if (!$reflection->hasProperty($propertyName)) {
-                continue;
-            }
-
             $property = $reflection->getProperty($propertyName);
 
             if ($property->isProtected() || $property->isPrivate()) {

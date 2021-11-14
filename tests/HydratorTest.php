@@ -10,7 +10,8 @@ class HydratorTest extends TestCase
 {
     protected array $testModelData = [
         "name" => "May",
-        'email' => 'may@locahlost.tld'
+        'email' => 'may@locahlost.tld',
+        'not_existed_property' => 'property which is not exist in target class'
     ];
 
     public function testHydration(): void
@@ -30,6 +31,7 @@ class HydratorTest extends TestCase
 
         $testModel = new TestModel($this->testModelData['name'], $this->testModelData['email']);
 
+        unset($this->testModelData['not_existed_property']);
         $this->assertEquals($this->testModelData, $hydrator->extract($testModel, ['name', 'email']));
     }
 }
