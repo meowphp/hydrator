@@ -24,7 +24,7 @@ class Hydrator
             $property = $reflection->getProperty($k);
 
             if ($property->isPrivate() || $property->isProtected()) {
-                $property->setAccessible($k);
+                $property->setAccessible(true);
             }
 
             $property->setValue($object, $v);
@@ -64,7 +64,7 @@ class Hydrator
      * Returns reflection class
      *
      * @param class-string|object $target
-     * @return \ReflectionClass
+     * @return \ReflectionClass<object>
      * @throws NotInstantiableClassException
      * @throws \ReflectionException
      */
@@ -74,7 +74,7 @@ class Hydrator
         $reflector = new \ReflectionClass($className);
 
         if (!$reflector->isInstantiable()) {
-            throw new NotInstantiableClassException($target);
+            throw new NotInstantiableClassException($className);
         }
 
         return $reflector;

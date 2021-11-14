@@ -1,0 +1,35 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ main, development/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  cs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer run action PHPC_CS
+        uses: MayMeowHQ/composer-run-action@v4
+        with:
+          composer_script: 'cs-check'
+
+  stan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer run action PHPStan
+        uses: MayMeowHQ/composer-run-action@v4
+        with:
+          composer_script: 'stan'
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer run action PHPStan
+        uses: MayMeowHQ/composer-run-action@v4
+        with:
+          composer_script: 'test'
