@@ -31,6 +31,8 @@ class Hydrator
                 $property->setAccessible(true);
             }
 
+            $v = @$v == null ? '' : $v;
+
             $property->setValue($object, $v);
         }
 
