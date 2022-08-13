@@ -5,6 +5,8 @@ __namespace:__ `Meow\Hydrator`
 Library that can hydrate (fill object with data from array) and extract data from
 object back to array.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D5DMOTA)
+
 ## Installation
 
 To install this library into your project use composer script:
