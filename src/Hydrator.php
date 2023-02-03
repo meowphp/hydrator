@@ -28,11 +28,8 @@ class Hydrator
 
             if (is_array($v)) {
                 $t = $reflection->getProperty($k)->getType();
-                if ((string) $t != 'array') {
-                    /** @var class-string $p */
-                    $p = (string) $t; // TODO more elegant code for this part here ???
-                    $v = $this->hydrate($p, $v);
-                }
+                /** @phpstan-ignore-next-line */
+                $v = $t->getName() === 'array' ? $v : $this->hydrate($t->getName(), $v);
             }
 
             $property = $reflection->getProperty($k);
