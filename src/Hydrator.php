@@ -3,6 +3,7 @@
 namespace Meow\Hydrator;
 
 use Meow\Hydrator\Exception\NotInstantiableClassException;
+use ReflectionType;
 
 class Hydrator
 {
@@ -26,8 +27,12 @@ class Hydrator
             }
 
             if (is_array($v)) {
-                $p = $reflection->getProperty($k)->getType()->getName();
-                $v = $this->hydrate($p, $v);
+                $t = $reflection->getProperty($k)->getType();
+                if ((string) $t != 'array') {
+                    /** @var class-string $p */
+                    $p = (string) $t; // TODO more elegant code for this part here ???
+                    $v = $this->hydrate($p, $v);
+                }
             }
 
             $property = $reflection->getProperty($k);

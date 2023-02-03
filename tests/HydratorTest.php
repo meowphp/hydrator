@@ -45,6 +45,13 @@ class HydratorTest extends TestCase
             'characterClass' => 'varior',
             'equipment' => [
                 'name' => 'Sting',
+                'weapon' => [
+                    'name' => 'Dagger',
+                    'damage' => [
+                        'min' => 1,
+                        'max' => 2
+                    ]
+                ]
             ]
         ];
 
@@ -55,5 +62,7 @@ class HydratorTest extends TestCase
         $this->assertEquals($testModelData['equipment']['name'], $model->getEquipment()->getName());
 
         $this->assertEquals($testModelData, $hydrator->extract($model, []));
+
+        var_dump($model);
     }
 }
