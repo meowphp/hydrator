@@ -25,6 +25,11 @@ class Hydrator
                 continue;
             }
 
+            if (is_array($v)) {
+                $p = $reflection->getProperty($k)->getType()->getName();
+                $v = $this->hydrate($p, $v);
+            }
+
             $property = $reflection->getProperty($k);
 
             if ($property->isPrivate() || $property->isProtected()) {
@@ -43,15 +48,21 @@ class Hydrator
      * Extracts requested properties and their values from class
      *
      * @param object $object
-     * @param array $fields
+     * @param array|null $fields
      * @return array
      * @throws \ReflectionException
      * @throws NotInstantiableClassException
      */
-    public function extract(object $object, array $fields): array
+    public function extract(object $object, ?array $fields = null): array
     {
         $reflection = $this->getReflectedClass($object);
         $result = [];
+
+        if ($fields === [] || $fields === null) {
+            $fields = array_map(function (\ReflectionProperty $property) {
+                return $property->getName();
+            }, $reflection->getProperties());
+        }
 
         foreach ($fields as $propertyName) {
             $property = $reflection->getProperty($propertyName);
@@ -60,7 +71,11 @@ class Hydrator
                 $property->setAccessible($propertyName);
             }
 
-            $result[$property->getName()] = $property->getValue($object);
+            if (is_object($property->getValue($object))) {
+                $result[$property->getName()] = $this->extract($property->getValue($object));
+            } else {
+                $result[$property->getName()] = $property->getValue($object);
+            }
         }
 
         return $result;
