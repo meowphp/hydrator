@@ -3,6 +3,7 @@
 namespace Meow\Hydrator\Test;
 
 use Meow\Hydrator\Hydrator;
+use Meow\Hydrator\Test\Model\Character;
 use Meow\Hydrator\Test\Model\TestModel;
 use PHPUnit\Framework\TestCase;
 
@@ -33,5 +34,33 @@ class HydratorTest extends TestCase
 
         unset($this->testModelData['not_existed_property']);
         $this->assertEquals($this->testModelData, $hydrator->extract($testModel, ['name', 'email']));
+    }
+
+    public function testHydrationWithNestedObjects(): void
+    {
+        $hydrator = new Hydrator();
+
+        $testModelData = [
+            'name' => 'Frodo',
+            'characterClass' => 'varior',
+            'equipment' => [
+                'name' => 'Sting',
+                'weapon' => [
+                    'name' => 'Dagger',
+                    'damage' => [
+                        'min' => 1,
+                        'max' => 2
+                    ]
+                ]
+            ]
+        ];
+
+        $model = $hydrator->hydrate(Character::class, $testModelData);
+
+        $this->assertEquals($testModelData['name'], $model->getName());
+        $this->assertEquals($testModelData['characterClass'], $model->getCharacterClass());
+        $this->assertEquals($testModelData['equipment']['name'], $model->getEquipment()->getName());
+
+        $this->assertEquals($testModelData, $hydrator->extract($model, []));
     }
 }
