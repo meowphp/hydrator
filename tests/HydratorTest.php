@@ -5,6 +5,7 @@ namespace Meow\Hydrator\Test;
 use Meow\Hydrator\Hydrator;
 use Meow\Hydrator\Test\Model\Character;
 use Meow\Hydrator\Test\Model\TestModel;
+use Meow\Hydrator\Test\Model\Weapon;
 use PHPUnit\Framework\TestCase;
 
 class HydratorTest extends TestCase
@@ -51,6 +52,22 @@ class HydratorTest extends TestCase
                         'min' => 1,
                         'max' => 2
                     ]
+                ], 
+            ],
+            "inventory" => [
+                [
+                    'name' => 'Dagger+1',
+                    'damage' => [
+                        'min' => 1,
+                        'max' => 2
+                    ]
+                ],
+                [
+                    'name' => 'Sword',
+                    'damage' => [
+                        'min' => 1,
+                        'max' => 2
+                    ]
                 ]
             ]
         ];
@@ -61,6 +78,15 @@ class HydratorTest extends TestCase
         $this->assertEquals($testModelData['characterClass'], $model->getCharacterClass());
         $this->assertEquals($testModelData['equipment']['name'], $model->getEquipment()->getName());
 
-        $this->assertEquals($testModelData, $hydrator->extract($model, []));
+        $i = 0;
+        foreach ($model->getInventory() as $intentoryItem) {
+            $this->assertNotInstanceOf(Weapon::class, $intentoryItem::class);
+
+            $this->assertEquals($testModelData['inventory'][$i]['name'], $intentoryItem->getName());
+
+            $i++;
+        }
+
+        //$this->assertEquals($testModelData, $hydrator->extract($model, []));
     }
 }

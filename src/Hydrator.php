@@ -4,6 +4,9 @@ namespace Meow\Hydrator;
 
 use Meow\Hydrator\Exception\NotInstantiableClassException;
 use ReflectionType;
+use Meow\Hydrator\Attributes\ArrayOf;
+use ReflectionAttribute;
+use ReflectionClass;
 
 class Hydrator
 {
@@ -27,9 +30,7 @@ class Hydrator
             }
 
             if (is_array($v)) {
-                $t = $reflection->getProperty($k)->getType();
-                /** @phpstan-ignore-next-line */
-                $v = $t->getName() === 'array' ? $v : $this->hydrate($t->getName(), $v);
+                $v = $this->parseArray($v, $k, $reflection);
             }
 
             $property = $reflection->getProperty($k);
@@ -101,5 +102,36 @@ class Hydrator
         }
 
         return $reflector;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $v value
+     * @param string|integer $k key
+     * @param ReflectionClass<object> $reflection
+     * @return object|array Parsed array or array<object>
+     */
+    protected function parseArray(array $v, string|int $k, ReflectionClass $reflection): object|array
+    {
+        $t = $reflection->getProperty((string)$k)->getType();
+        $attributes = $reflection->getProperty((string)$k)->getAttributes(ArrayOf::class);
+
+        if (!empty($attributes)) {
+            $ref = $attributes[0]->newInstance();
+            $objectArray = [];
+
+            if (class_exists($ref->getType())) {
+                $refClass = new ReflectionClass($ref->getType());
+                foreach ($v as $item) {
+                    $objectArray[] = $this->hydrate($refClass->getName(), $item);
+                }
+
+                return $objectArray;
+            }
+        }
+
+        /** @phpstan-ignore-next-line */
+        return $v = $t->getName() === 'array' ? $v : $this->hydrate($t->getName(), $v);
     }
 }
