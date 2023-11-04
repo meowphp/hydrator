@@ -39,4 +39,23 @@ Extraction properties and their values back to the array.
 $testModelDataArray = $hydrator->extract($testModel, ['name', 'email']);
 ```
 
+### Arrays of objects
+
+You can now parse arrays of objects by defining them with the attribute `ArrayOf`. Check following snippet
+
+```php
+// ...
+use Meow\Hydrator\Attributes\ArrayOf;
+
+class Character
+{
+// ...
+protected Equipment $equipment;
+
+#[ArrayOf(Weapon::class)]
+protected array $inventory;
+// ...
+}
+```
+
 __License: MIT__
